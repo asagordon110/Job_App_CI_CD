@@ -33,10 +33,7 @@ function App() {
   }, []);
 
   function handleChange(event) {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value
-    });
+    setForm({ ...form, [event.target.name]: event.target.value });
   }
 
   async function handleSubmit(event) {
@@ -83,75 +80,156 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <header>
-        <h1>Cloud Resume Tracker</h1>
-        <p>Track job applications, interviews, offers, and rejections.</p>
-      </header>
+    <main className="page">
+      <section className="hero">
+        <div className="hero-text">
+          <p className="eyebrow">AWS ECS Fargate Project</p>
+          <h1>Cloud Resume Tracker</h1>
+          <p className="subtitle">
+            A cloud-native job application dashboard built with React, Node.js,
+            Docker, Amazon ECR, ECS Fargate, ALB, and GitHub Actions.
+          </p>
 
-      <section className="form-card">
-        <h2>Add Application</h2>
+          <div className="hero-badges">
+            <span>Dockerized</span>
+            <span>ECS Fargate</span>
+            <span>CI/CD Enabled</span>
+            <span>CloudWatch Ready</span>
+          </div>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            name="company"
-            placeholder="Company"
-            value={form.company}
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            name="position"
-            placeholder="Position"
-            value={form.position}
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            name="location"
-            placeholder="Location"
-            value={form.location}
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="date"
-            name="dateApplied"
-            value={form.dateApplied}
-            onChange={handleChange}
-            required
-          />
-
-          <select name="status" value={form.status} onChange={handleChange}>
-            {statuses.map((status) => (
-              <option key={status}>{status}</option>
-            ))}
-          </select>
-
-          <textarea
-            name="notes"
-            placeholder="Notes"
-            value={form.notes}
-            onChange={handleChange}
-          />
-
-          <button type="submit">Add Application</button>
-        </form>
+        <div className="cloud-scene">
+          <div className="orb orb-one"></div>
+          <div className="orb orb-two"></div>
+          <div className="cloud-card floating">
+            <div className="cloud-icon">☁</div>
+            <h2>Production Pipeline</h2>
+            <p>GitHub → ECR → ECS → ALB</p>
+            <div className="pipeline">
+              <span>Code</span>
+              <span>Build</span>
+              <span>Push</span>
+              <span>Deploy</span>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="tracker">
-        <h2>Applications</h2>
+      <section className="dashboard">
+        <div className="panel form-panel">
+          <div className="panel-header">
+            <p className="eyebrow">New Target</p>
+            <h2>Add Job Application</h2>
+          </div>
 
-        <div className="grid">
+          <form onSubmit={handleSubmit}>
+            <input
+              name="company"
+              placeholder="Company"
+              value={form.company}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              name="position"
+              placeholder="Position"
+              value={form.position}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              name="location"
+              placeholder="Location"
+              value={form.location}
+              onChange={handleChange}
+              required
+            />
+
+            <input
+              type="date"
+              name="dateApplied"
+              value={form.dateApplied}
+              onChange={handleChange}
+              required
+            />
+
+            <select name="status" value={form.status} onChange={handleChange}>
+              {statuses.map((status) => (
+                <option key={status}>{status}</option>
+              ))}
+            </select>
+
+            <textarea
+              name="notes"
+              placeholder="Notes, recruiter name, interview prep, follow-up reminders..."
+              value={form.notes}
+              onChange={handleChange}
+            />
+
+            <button type="submit">Deploy Application Record</button>
+          </form>
+        </div>
+
+        <div className="panel stats-panel">
+          <p className="eyebrow">Live Metrics</p>
+          <h2>Pipeline Overview</h2>
+
+          <div className="stats-grid">
+            <div>
+              <strong>{applications.length}</strong>
+              <span>Total Apps</span>
+            </div>
+            <div>
+              <strong>
+                {
+                  applications.filter((app) =>
+                    ["Interview", "Final Round", "Offer"].includes(app.status)
+                  ).length
+                }
+              </strong>
+              <span>Active Leads</span>
+            </div>
+            <div>
+              <strong>
+                {applications.filter((app) => app.status === "Offer").length}
+              </strong>
+              <span>Offers</span>
+            </div>
+          </div>
+
+          <div className="terminal">
+            <p>$ docker build --platform linux/amd64</p>
+            <p>$ docker push amazonaws.com/cloud-resume-tracker</p>
+            <p>$ aws ecs update-service --force-new-deployment</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="applications-section">
+        <div className="section-title">
+          <p className="eyebrow">Application Fleet</p>
+          <h2>Tracked Opportunities</h2>
+        </div>
+
+        <div className="card-grid">
           {applications.map((appItem) => (
-            <div className="card" key={appItem.id}>
-              <h3>{appItem.company}</h3>
-              <p><strong>Position:</strong> {appItem.position}</p>
-              <p><strong>Location:</strong> {appItem.location}</p>
-              <p><strong>Date Applied:</strong> {appItem.dateApplied}</p>
+            <article className="job-card" key={appItem.id}>
+              <div className="card-top">
+                <div>
+                  <p className="company">{appItem.company}</p>
+                  <h3>{appItem.position}</h3>
+                </div>
+                <span className={`status ${appItem.status.replaceAll(" ", "-").toLowerCase()}`}>
+                  {appItem.status}
+                </span>
+              </div>
+
+              <div className="job-meta">
+                <p>📍 {appItem.location}</p>
+                <p>📅 {appItem.dateApplied}</p>
+              </div>
 
               <label>Status</label>
               <select
@@ -163,19 +241,19 @@ function App() {
                 ))}
               </select>
 
-              <p className="notes">{appItem.notes}</p>
+              {appItem.notes && <p className="notes">{appItem.notes}</p>}
 
               <button
                 className="delete-btn"
                 onClick={() => deleteApplication(appItem.id)}
               >
-                Delete
+                Remove
               </button>
-            </div>
+            </article>
           ))}
         </div>
       </section>
-    </div>
+    </main>
   );
 }
 
